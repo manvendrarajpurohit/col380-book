@@ -1,199 +1,69 @@
-\documentclass[11pt,a4paper]{article}
+\chapter{Performance Metrics}
 
-% ---------- Packages ----------
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[margin=1in]{geometry}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{mathtools}
-\usepackage{graphicx}
-\usepackage{xcolor}
-\usepackage{tcolorbox}
-\tcbuselibrary{skins,breakable}
-\usepackage{hyperref}
-\usepackage{enumitem}
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{fancyhdr}
-\usepackage{titlesec}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.18}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,calc}
-\usepackage[protrusion=true,expansion=false]{microtype}
-\usepackage{siunitx}
-\usepackage{caption}
-
-% ---------- Colors ----------
-\definecolor{primary}{RGB}{30,58,95}
-\definecolor{accent}{RGB}{178,34,52}
-\definecolor{softgray}{RGB}{245,245,248}
-\definecolor{emerald}{RGB}{27,115,82}
-\definecolor{amber}{RGB}{184,115,20}
-\definecolor{lightblue}{RGB}{230,240,250}
-\definecolor{lightred}{RGB}{253,235,235}
-\definecolor{lightgreen}{RGB}{232,245,237}
-\definecolor{lightyellow}{RGB}{253,247,230}
-
-% ---------- Hyperref ----------
-\hypersetup{
-    colorlinks=true,
-    linkcolor=primary,
-    urlcolor=accent,
-    citecolor=primary,
-    pdftitle={Lecture 21 -- Performance Metrics},
-    pdfauthor={Class notes}
-}
-
-% ---------- Titles ----------
-\titleformat{\section}
-  {\color{primary}\Large\bfseries}{\thesection}{0.6em}{}[{\color{primary}\titlerule[0.8pt]}]
-\titleformat{\subsection}
-  {\color{accent}\large\bfseries}{\thesubsection}{0.5em}{}
-\titleformat{\subsubsection}
-  {\color{primary}\normalsize\bfseries}{\thesubsubsection}{0.4em}{}
-
-% ---------- Header/Footer ----------
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\small\color{primary}\textbf{Lec 21 --- Performance Metrics}}
-\fancyhead[R]{\small\color{primary}Parallel \& Distributed Programming}
-\fancyfoot[C]{\small\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
-
-% ---------- Custom boxes ----------
-\newtcolorbox{definitionbox}[1][]{
-  enhanced, breakable,
-  colback=lightblue, colframe=primary,
-  fonttitle=\bfseries\color{white},
-  coltitle=white,
-  boxrule=0.5pt, arc=3pt,
-  left=8pt,right=8pt,top=6pt,bottom=6pt,
-  title=#1
-}
-\newtcolorbox{errorbox}[1][]{
-  enhanced, breakable,
-  colback=lightred, colframe=accent,
-  fonttitle=\bfseries\color{white},
-  coltitle=white,
-  boxrule=0.5pt, arc=3pt,
-  left=8pt,right=8pt,top=6pt,bottom=6pt,
-  title=#1
-}
-\newtcolorbox{insightbox}[1][]{
-  enhanced, breakable,
-  colback=lightgreen, colframe=emerald,
-  fonttitle=\bfseries\color{white},
-  coltitle=white,
-  boxrule=0.5pt, arc=3pt,
-  left=8pt,right=8pt,top=6pt,bottom=6pt,
-  title=#1
-}
-\newtcolorbox{examplebox}[1][]{
-  enhanced, breakable,
-  colback=lightyellow, colframe=amber,
-  fonttitle=\bfseries\color{white},
-  coltitle=white,
-  boxrule=0.5pt, arc=3pt,
-  left=8pt,right=8pt,top=6pt,bottom=6pt,
-  title=#1
-}
-\newtcolorbox{qabox}[1][]{
-  enhanced, breakable,
-  colback=softgray, colframe=primary,
-  fonttitle=\bfseries\color{white},
-  coltitle=white,
-  boxrule=0.5pt, arc=3pt,
-  left=8pt,right=8pt,top=6pt,bottom=6pt,
-  title=#1
-}
-
-% ---------- Math macros ----------
-\newcommand{\Tone}{T_{1}}
-\newcommand{\Tp}{T_{p}}
-\newcommand{\Sp}{S_{p}}
-\newcommand{\Ep}{E_{p}}
-\newcommand{\Cp}{C_{p}}
-\newcommand{\To}{T_{o}}
-
-% ---------- Title page ----------
-\title{
-  \vspace{-1.2cm}
-  {\color{primary}\Huge\textbf{Performance Metrics}}\\[0.4em]
-  {\color{accent}\Large Lecture 21 --- Parallel \& Distributed Programming}\\[0.3em]
-  \rule{\linewidth}{0.5pt}\\[-0.2em]
-  {\normalsize\itshape Class notes with corrections to slides}
-}
-\author{\textbf{Lecturer:} Prof. Subodh Sharma \\ \textbf{Institution:} Indian Institute of Technology \\ \textbf{Course:} Introduction to Parallel \& Distributed Programming \\ \textbf{Transcribed by:} Anirudha Saraf, Manvendra Rajpurohit, Gaurav Raju Shende}
-\date{}
-\linespread{0.95}
-
-\begin{document}
-\maketitle
-\thispagestyle{empty}
-
-% ---------- Preface ----------
-\begin{tcolorbox}[colback=softgray, colframe=primary, boxrule=0.5pt, arc=3pt]
-\textbf{About these notes.} These are our notes from Lecture 21 on performance metrics
-for parallel programs. We follow the order in which Sir presented the material, fix
-a few mistakes in the printed slides (flagged in red boxes), and fill in the
-derivations he wrote out on the board but which are not on the deck. The last
-section (iso-efficiency and the ``strongly / weakly scalable'' classification)
-was given verbally in the closing minutes of class and does not appear on the
-slides at all, so we have written it up from notes.
-\end{tcolorbox}
-
-\tableofcontents
-\newpage
+\begin{ppnote}
+These notes are from Lecture~21 on performance metrics for parallel programs.
+They follow the order in which the material was presented in class, fix a
+few mistakes in the printed slides (flagged in pitfall boxes), and fill in the
+derivations written out on the board but not on the deck. The closing
+section on iso-efficiency and the ``strongly~/~weakly scalable'' classification
+was given verbally and does not appear on the slides at all, so it has been
+written up from notes.\\[2pt]
+\textit{Lecturer:} Prof. Subodh Sharma, IIT Delhi (COL380, Introduction to
+Parallel \& Distributed Programming).\\
+\textit{Transcribed by:} Anirudha Saraf, Manvendra Rajpurohit, Gaurav Raju Shende.
+\end{ppnote}
 
 % ==========================================================
 \section{Why we care about performance metrics}
 % ==========================================================
 
-Correctness is one half of the job. The whole point of writing a parallel program
-in the first place is to finish a workload faster, or to handle a bigger workload
-than a single machine can, or to use the hardware more economically. None of those
-claims mean anything unless we have a way to measure them.
+Correctness is one half of the job. The whole point of writing a parallel
+program in the first place is to finish a workload faster, or to handle a
+bigger workload than a single machine can, or to use the hardware more
+economically. None of those claims mean anything unless we have a way to
+measure them.
 
-Sir made the point at the start of class that this material could really have been
-covered on day one --- the moment you write your first OpenMP, MPI or CUDA program,
-you start wanting to know whether the work you put in actually paid off. The answer
-has several parts: how does the program behave as you give it more cores, how does
-it behave as the problem itself grows, and how much of the runtime is being eaten
-by overheads (communication, cache coherence, synchronisation, ordering fences,
-and so on).
+The point was made at the start of class that this material could really
+have been covered on day one --- the moment you write your first OpenMP, MPI
+or CUDA program, you start wanting to know whether the work you put in
+actually paid off. The answer has several parts: how does the program
+behave as you give it more cores, how does it behave as the problem itself
+grows, and how much of the runtime is being eaten by overheads
+(communication, cache coherence, synchronisation, ordering fences, and so on).
 
-This lecture pins down the vocabulary --- speedup, cost, overhead, efficiency, and
-scalability --- and then presents the two laws (Amdahl and Gustafson) that say
-something about how far parallelism can take you. The closing topic, iso-efficiency,
-ties everything together by asking how fast the problem must grow if we want to
-keep the processors usefully busy.
+This chapter pins down the vocabulary --- speedup, cost, overhead,
+efficiency, and scalability --- and then presents the two laws (Amdahl and
+Gustafson) that say something about how far parallelism can take you. The
+closing topic, iso-efficiency, ties everything together by asking how fast
+the problem must grow if we want to keep the processors usefully busy.
 
-\begin{insightbox}[The question we are trying to answer]
-Given a sequential program and $p$ processors: how much faster does it run, how
-well are we using those $p$ processors, and how big does the problem need to be
-for that quality to hold up?
-\end{insightbox}
+\begin{ppkey}
+Given a sequential program and $p$ processors: how much faster does it run,
+how well are we using those $p$ processors, and how big does the problem
+need to be for that quality to hold up?
+\end{ppkey}
 
 % ==========================================================
 \section{The RAM model}
 % ==========================================================
 
-Before defining anything, Sir fixed a model of computation. Throughout this course
-we use the standard \textbf{RAM (Random Access Machine)} model, with these
-assumptions:
+Before defining anything, we fix a model of computation. Throughout this
+course we use the standard \ppterm{RAM (Random Access Machine)} model, with
+these assumptions:
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}
   \item Every simple arithmetic or logical operation takes one unit of time.
   \item Every local memory access (by a thread or process) takes one unit of time.
-  \item Each thread or process is an independent unit of execution with its own local view of memory.
-  \item If process $i$ sends a constant-size message to process $j$, the transmission also takes one unit of time.
+  \item Each thread or process is an independent unit of execution with its
+        own local view of memory.
+  \item If process $i$ sends a constant-size message to process $j$, the
+        transmission also takes one unit of time.
 \end{itemize}
 
-The model is an idealisation --- real hardware has caches, NUMA effects, network
-contention, and so on --- but it is the baseline. The communication-aware extensions
-later in the lecture refine it without throwing it away.
+The model is an idealisation --- real hardware has caches, NUMA effects,
+network contention, and so on --- but it is the baseline. The
+communication-aware extensions later in the chapter refine it without
+throwing it away.
 
 % ==========================================================
 \section{The basic definitions}
@@ -201,198 +71,223 @@ later in the lecture refine it without throwing it away.
 
 \subsection{Sequential and parallel time}
 
-Throughout the lecture we write
-\begin{itemize}[leftmargin=*]
-  \item $\Tone$ for the wall-clock time of the best sequential algorithm for the problem on a single processor, and
-  \item $\Tp$ for the wall-clock time of the parallel algorithm on $p$ processors.
+Throughout we write
+\begin{itemize}
+  \item $T_1$ for the wall-clock time of the best sequential algorithm for
+        the problem on a single processor, and
+  \item $T_p$ for the wall-clock time of the parallel algorithm on $p$ processors.
 \end{itemize}
-A small but important point Sir emphasised: $\Tone$ is the time of the
-\emph{fastest known serial algorithm}, not the parallel algorithm running on a
-single processor. Otherwise we could make a slow parallel algorithm look good
-just by comparing it to itself.
+A small but important point: $T_1$ is the time of the
+\emph{fastest known serial algorithm}, not the parallel algorithm running on
+a single processor. Otherwise we could make a slow parallel algorithm look
+good just by comparing it to itself.
 
 \subsection{Speedup}
 
-\begin{definitionbox}[Speedup]
+\begin{ppdefn}
+\textbf{Speedup.}
 \[
-\Sp \;:=\; \frac{\Tone}{\Tp}
+S_p \;:=\; \frac{T_1}{T_p}.
 \]
-$\Sp$ is how many times faster the parallel run was, compared to the serial
-baseline.
-\end{definitionbox}
+$S_p$ is how many times faster the parallel run was, compared to the serial baseline.
+\end{ppdefn}
 
 There are three regimes worth knowing:
 
-\begin{itemize}[leftmargin=*]
-  \item \textbf{Linear (ideal) speedup:} $\Sp = p$. Throwing $p$ resources at the problem reduced the time by exactly a factor of $p$.
-  \item \textbf{Sub-linear speedup:} $\Sp < p$. The usual case. Sir listed the typical culprits: communication latency, synchronisation, cache coherence traffic, thread management, memory management, and the ``hundred small things'' that seep into the mixture.
-  \item \textbf{Super-linear speedup:} $\Sp > p$. Rare but real. Usually it is a cache effect (the per-processor working set now fits in L2) or a search-parallelism effect (parallel exploration finds the answer earlier).
+\begin{itemize}
+  \item \ppemph{Linear (ideal) speedup:} $S_p = p$. Throwing $p$ resources
+        at the problem reduced the time by exactly a factor of $p$.
+  \item \ppemph{Sub-linear speedup:} $S_p < p$. The usual case. The typical
+        culprits are communication latency, synchronisation, cache coherence
+        traffic, thread management, memory management, and the ``hundred
+        small things'' that seep into the mixture.
+  \item \ppemph{Super-linear speedup:} $S_p > p$. Rare but real. Usually it
+        is a cache effect (the per-processor working set now fits in L2) or a
+        search-parallelism effect (parallel exploration finds the answer earlier).
 \end{itemize}
 
 \subsection{Cost}
 
-\begin{definitionbox}[Cost]
+\begin{ppdefn}
+\textbf{Cost.}
 \[
-\Cp \;=\; p \times \Tp
+C_p \;=\; p \times T_p.
 \]
 The total computational effort: processor-seconds spent.
-\end{definitionbox}
+\end{ppdefn}
 
-Speedup alone is dangerous. The slide gives a nice example: $\Tone = 100$\,s and
-$T_8 = 20$\,s gives $S_8 = 5$, which sounds great. But the cost is $C_8 = 8 \times
-20 = 160$ processor-seconds --- 60 more than the serial run did with one processor.
-We got the answer faster, but we did $60\%$ more total work to get it. If energy
-were our metric (\textbf{flops per joule}, the modern figure of merit for
-\textit{green supercomputers}), this parallel run is actually worse.
+Speedup alone is dangerous. The slide gives a nice example: $T_1 = 100$\,s
+and $T_8 = 20$\,s gives $S_8 = 5$, which sounds great. But the cost is
+$C_8 = 8 \times 20 = 160$ processor-seconds --- 60 more than the serial run
+did with one processor. We got the answer faster, but we did $60\%$ more
+total work to get it. If energy were our metric (\ppterm{flops per joule},
+the modern figure of merit for \emph{green supercomputers}), this parallel
+run is actually worse.
 
 \subsubsection*{Cost-optimality}
-A parallel algorithm is \textbf{cost-optimal} when
+A parallel algorithm is \ppterm{cost-optimal} when
 \[
-p \cdot \Tp \;=\; \mathcal{O}(\Tone),
+p \cdot T_p \;=\; \mathcal{O}(T_1),
 \]
-i.e.\ the parallel total work is asymptotically the same as the sequential work.
-Sir gave a rather brutal counter-example to make the point:
+i.e.\ the parallel total work is asymptotically the same as the sequential
+work. A rather brutal counter-example was given in class to make the point:
 
-\begin{examplebox}[Why cost matters: matrix multiplication]
+\begin{ppexample}
+\textbf{Why cost matters: matrix multiplication.}
 Take $n \times n$ matrix multiplication, where the serial algorithm takes
-$\Tone = \Theta(n^{3})$. Suppose we throw $p = n^{2}$ processors at it and somehow
-get $\Tp = n$. Then
+$T_1 = \Theta(n^{3})$. Suppose we throw $p = n^{2}$ processors at it and
+somehow get $T_p = n$. Then
 \[
-\Sp = \frac{n^{3}}{n} = n^{2} \quad\text{(huge speedup),}
+S_p = \frac{n^{3}}{n} = n^{2} \quad\text{(huge speedup),}
 \qquad
-\Cp = n^{2}\cdot n = n^{3}.
+C_p = n^{2}\cdot n = n^{3}.
 \]
-This is fine --- cost-optimal. But suppose instead $\Tp = n^{2}$:
+This is fine --- cost-optimal. But suppose instead $T_p = n^{2}$:
 \[
-\Sp = n, \qquad \Cp = n^{2}\cdot n^{2} = n^{4}.
+S_p = n, \qquad C_p = n^{2}\cdot n^{2} = n^{4}.
 \]
-We pay $n^{4}$ total work for a speedup of only $n$. The cost has gone from $n^{3}$
-to $n^{4}$, which is one full factor of $n$ of wasted work. As Sir put it, the
-parallel solution is \textbf{unscalable} --- the speedup looks fine in isolation
-but the bookkeeping reveals the trap.
-\end{examplebox}
+We pay $n^{4}$ total work for a speedup of only $n$. The cost has gone from
+$n^{3}$ to $n^{4}$, which is one full factor of $n$ of wasted work. The
+parallel solution is \ppterm{unscalable} --- the speedup looks fine in
+isolation but the bookkeeping reveals the trap.
+\end{ppexample}
 
 \subsection{Parallelism overhead}
 
-\begin{definitionbox}[Total overhead]
+\begin{ppdefn}
+\textbf{Total overhead.}
 \[
-\To \;=\; \Cp - \Tone \;=\; p \cdot \Tp - \Tone
+T_o \;=\; C_p - T_1 \;=\; p \cdot T_p - T_1.
 \]
-\end{definitionbox}
+\end{ppdefn}
 
-This is the part of the parallel work that is not the serial algorithm's essential
-computation. It bundles together:
-\begin{itemize}[leftmargin=*]
-  \item communication between processors (message passing, cache coherence traffic),
+This is the part of the parallel work that is not the serial algorithm's
+essential computation. It bundles together:
+\begin{itemize}
+  \item communication between processors (message passing, cache coherence
+        traffic),
   \item synchronisation (barriers, locks, atomic updates, ordering fences),
   \item idle time from load imbalance,
-  \item thread / process management (creation, scheduling, teardown),
+  \item thread~/~process management (creation, scheduling, teardown),
   \item redundant computation done to avoid communication.
 \end{itemize}
 
-Cost-optimality is essentially the statement that the overhead does not grow
-faster than $\Tone$: $\To/\Tone \to 0$ as the problem and $p$ scale together. If
-$\To$ grows faster than $p$, scaling fails entirely --- adding processors only
-makes things worse.
+Cost-optimality is essentially the statement that the overhead does not
+grow faster than $T_1$: $T_o/T_1 \to 0$ as the problem and $p$ scale together.
+If $T_o$ grows faster than $p$, scaling fails entirely --- adding processors
+only makes things worse.
 
 \subsection{Efficiency}
 
-\begin{definitionbox}[Efficiency]
+\begin{ppdefn}
+\textbf{Efficiency.}
 \[
-\Ep \;=\; \frac{\Tone}{\Cp} \;=\; \frac{\Tone}{p \cdot \Tp} \;=\; \frac{\Sp}{p}
+E_p \;=\; \frac{T_1}{C_p} \;=\; \frac{T_1}{p \cdot T_p} \;=\; \frac{S_p}{p}.
 \]
-The fraction of total processor-time spent doing useful work. $\Ep$ lies in
-$(0,1]$, and $\Ep = 1$ is the ideal case.
-\end{definitionbox}
+The fraction of total processor-time spent doing useful work. $E_p$ lies in
+$(0,1]$, and $E_p = 1$ is the ideal case.
+\end{ppdefn}
 
 The slide example is worth pausing on:
 
-\begin{examplebox}[Speedup hides what efficiency reveals]
-\begin{itemize}[leftmargin=*]
-  \item $S_{8} = 7$ gives $E_{8} = 7/8 = 0.875$. Processors are 87.5\% utilised --- excellent.
-  \item $S_{64} = 20$ gives $E_{64} = 20/64 \approx 0.3125$. On 64 processors, only 31\% of the aggregate capacity is doing useful work.
+\begin{ppexample}
+\textbf{Speedup hides what efficiency reveals.}
+\begin{itemize}
+  \item $S_{8} = 7$ gives $E_{8} = 7/8 = 0.875$. Processors are
+        $87.5\%$ utilised --- excellent.
+  \item $S_{64} = 20$ gives $E_{64} = 20/64 \approx 0.3125$. On 64 processors,
+        only $31\%$ of the aggregate capacity is doing useful work.
 \end{itemize}
 $S_{64}$ is almost three times $S_8$, but the 8-processor configuration is
-twice as efficient. Speedup numbers reported on their own are half-truths; always
-look at efficiency next to them.
+twice as efficient. Speedup numbers reported on their own are half-truths;
+always look at efficiency next to them.
 
-The natural follow-up question --- \emph{if we want to keep efficiency at $0.875$
-even on 64 processors, how much do we need to grow the problem?} --- is what
-iso-efficiency answers in \S\ref{sec:isoefficiency}.
-\end{examplebox}
+The natural follow-up question --- \emph{if we want to keep efficiency at
+$0.875$ even on 64 processors, how much do we need to grow the problem?} ---
+is what iso-efficiency answers in
+Section~\ref{sec:isoefficiency}.
+\end{ppexample}
 
 % ==========================================================
 \section{Scalability}
+\label{sec:scalability}
 % ==========================================================
 
-A speedup number is reported for one specific (problem size, processor count)
-pair, which is why it is so often misleading. Scalability asks how the metrics
-\emph{evolve} when we change either knob, or both.
+A speedup number is reported for one specific (problem size, processor
+count) pair, which is why it is so often misleading. Scalability asks how
+the metrics \emph{evolve} when we change either knob, or both.
 
 From here on we treat $T$, $S$, $E$, $C$ as functions of two variables: the
 problem size $n$ and the processor count $p$.
 
-The reason this matters is simple. If we hold $n$ fixed and keep increasing $p$,
-the per-processor work shrinks, but the communication and synchronisation costs
-do not, so the speedup curve flattens out. If we instead grow $n$ together with
-$p$, the parallel \emph{opportunity} grows --- there is more work to spread across
-the processors --- while the serial portion of the program stays roughly the same
-size in absolute terms. The two situations behave very differently, which is why
-they get separate names.
+The reason this matters is simple. If we hold $n$ fixed and keep increasing
+$p$, the per-processor work shrinks, but the communication and
+synchronisation costs do not, so the speedup curve flattens out. If we
+instead grow $n$ together with $p$, the parallel \emph{opportunity}
+grows --- there is more work to spread across the processors --- while the
+serial portion of the program stays roughly the same size in absolute terms.
+The two situations behave very differently, which is why they get separate
+names.
 
 \subsection{Strong scaling}
 
-\begin{definitionbox}[Strong scaling]
+\begin{ppdefn}
+\textbf{Strong scaling.}
 Hold $n$ fixed and let $p$ grow. Study how $T(n,p)$ behaves.
 Ideal strong scaling:
 \[
 T(n,p) \;=\; \frac{T(n,1)}{p}, \qquad \text{equivalently } S_p = p.
 \]
-\end{definitionbox}
+\end{ppdefn}
 
-Strong scaling rarely holds in practice for large $p$. Once the per-processor work
-shrinks enough, the overheads dominate. A useful way to write the parallel runtime
-is
+Strong scaling rarely holds in practice for large $p$. Once the
+per-processor work shrinks enough, the overheads dominate. A useful way to
+write the parallel runtime is
 \[
 T(n,p) \;=\; T_{\text{comp}}(n,p) \;+\; T_{\text{comm}}(n,p) \;+\; T_{\text{sync}}(n,p) \;+\; T_{\text{idle}}(n,p).
 \]
-For fixed $n$, $T_{\text{comp}}$ falls like $1/p$, but the others typically stay
-constant or grow with $p$, so eventually the second group dominates the first.
-On top of this, load imbalance gets harder to avoid as the chunks get smaller, so
-beyond some point adding more processors actively slows the program down.
+For fixed $n$, $T_{\text{comp}}$ falls like $1/p$, but the others typically
+stay constant or grow with $p$, so eventually the second group dominates the
+first. On top of this, load imbalance gets harder to avoid as the chunks get
+smaller, so beyond some point adding more processors actively slows the
+program down.
 
-\begin{errorbox}[Slide correction]
-The slide writes ``Strong scaling breaks down: $T(n,p) = T_{\text{comp}} +
-T_{\text{comm}} + T_{\text{sync}} + T_{\text{idle}}$.'' Sir corrected this in
-class. The decomposition is the \emph{general} formula for parallel runtime --- it
-is always true. What actually causes strong scaling to fail is that the
-\emph{overhead terms} ($T_{\text{comm}} + T_{\text{sync}} + T_{\text{idle}}$) grow
-with $p$. Without a lower bound on those, throwing more processors stops helping.
-\end{errorbox}
+\begin{pppitfall}
+\textbf{Slide correction.} The slide writes ``Strong scaling breaks down:
+$T(n,p) = T_{\text{comp}} + T_{\text{comm}} + T_{\text{sync}} + T_{\text{idle}}$.''
+This was corrected in class. The decomposition is the \emph{general} formula
+for parallel runtime --- it is always true. What actually causes strong
+scaling to fail is that the \emph{overhead terms}
+($T_{\text{comm}} + T_{\text{sync}} + T_{\text{idle}}$) grow with $p$.
+Without a lower bound on those, throwing more processors stops helping.
+\end{pppitfall}
 
 \subsection{Weak scaling}
 
-\begin{definitionbox}[Weak scaling]
-Each processor is given a fixed workload $m$, so the total problem size is $n = mp$.
-Ideal weak scaling:
+\begin{ppdefn}
+\textbf{Weak scaling.}
+Each processor is given a fixed workload $m$, so the total problem size is
+$n = mp$. Ideal weak scaling:
 \[
 T(mp,\,p) \;=\; T(m,\,1),
 \]
 i.e.\ runtime stays constant as $p$ and $n$ grow together.
-\end{definitionbox}
+\end{ppdefn}
 
-\begin{errorbox}[Slide correction]
-The slide states ideal weak scaling as $T(mp, p) = T(m,1)/p$. This is wrong ---
-that formula is what we would write for ideal \emph{strong} scaling on a problem
-of size $m$. The whole point of weak scaling is that each processor's local work
-stays the same, so the wall-clock time should stay constant, not shrink. The
-correct formula is
+\begin{pppitfall}
+\textbf{Slide correction.} The slide states ideal weak scaling as
+$T(mp, p) = T(m,1)/p$. This is wrong --- that formula is what we would
+write for ideal \emph{strong} scaling on a problem of size $m$. The whole
+point of weak scaling is that each processor's local work stays the same,
+so the wall-clock time should stay constant, not shrink. The correct
+formula is
 \[
 T(mp,p) = T(m,1) \quad\text{(or at worst approximately constant in $p$).}
 \]
-\end{errorbox}
+\end{pppitfall}
 
-\begin{examplebox}[Slide example]
+\begin{ppexample}
+\textbf{Slide example.}
 \begin{center}
 \begin{tabular}{@{}ccc@{}}
 \toprule
@@ -402,78 +297,81 @@ $p$ & Total problem size & Time (s) \\ \midrule
 4  & 4\,000\,000 & 13 \\ \bottomrule
 \end{tabular}
 \end{center}
-Ideal weak scaling would have held the time at 10\,s. The drift from 10 to 11 to
-13\,s is real communication overhead, but it is small and the growth is far
-sub-linear in $p$. This is the kind of ``approximately constant'' behaviour Sir
-called acceptable.
-\end{examplebox}
+Ideal weak scaling would have held the time at $10$\,s. The drift from $10$
+to $11$ to $13$\,s is real communication overhead, but it is small and the
+growth is far sub-linear in $p$. This is the kind of ``approximately
+constant'' behaviour described as acceptable in class.
+\end{ppexample}
 
 % ==========================================================
 \section{Amdahl's law}
 % ==========================================================
 
-The setup: split the sequential time $\Tone$ into
-\begin{itemize}[leftmargin=*]
+The setup: split the sequential time $T_1$ into
+\begin{itemize}
   \item a fraction $f$ that is inherently sequential and cannot be parallelised, and
   \item a fraction $(1-f)$ that can be parallelised perfectly.
 \end{itemize}
 
-On $p$ processors, the sequential part still costs $f \cdot \Tone$, while the
-parallel part costs $(1-f)\cdot \Tone / p$. Adding them up:
+On $p$ processors, the sequential part still costs $f \cdot T_1$, while the
+parallel part costs $(1-f)\cdot T_1 / p$. Adding them up:
 
-\begin{definitionbox}[Amdahl's law]
+\begin{ppdefn}
+\textbf{Amdahl's law.}
 \[
-\boxed{\;\Tp \;=\; \Tone\!\left(f + \tfrac{1-f}{p}\right)\;}
+T_p \;=\; T_1\!\left(f + \frac{1-f}{p}\right),
 \qquad
-\boxed{\;\Sp \;=\; \dfrac{1}{f + \tfrac{1-f}{p}}\;}
+S_p \;=\; \dfrac{1}{f + \tfrac{1-f}{p}},
 \]
 and as $p \to \infty$:
 \[
-\boxed{\;S_{\infty} \;=\; \frac{1}{f}.\;}
+S_{\infty} \;=\; \frac{1}{f}.
 \]
-\end{definitionbox}
+\end{ppdefn}
 
-\begin{errorbox}[Slide correction]
-The slide writes
+\begin{pppitfall}
+\textbf{Slide correction.} The slide writes
 \[
 T_p \;=\; T_1\bigl(1 + 1 - f/p\bigr),
 \]
-which is just garbled --- the parentheses and signs do not mean what they should.
-The correct expression is
+which is just garbled --- the parentheses and signs do not mean what they
+should. The correct expression is
 \[
 T_p \;=\; T_1\!\left(f + \frac{1-f}{p}\right),
 \]
 which is consistent with the (correct) $S_p = 1/(f + (1-f)/p)$ printed
 right below it.
-\end{errorbox}
+\end{pppitfall}
 
 \subsection{What Amdahl's law actually tells us}
 
-For a fixed-size problem, the serial fraction sets a hard ceiling on how fast you
-can ever go, no matter how much hardware you throw at it.
+For a fixed-size problem, the serial fraction sets a hard ceiling on how
+fast you can ever go, no matter how much hardware you throw at it.
 
-\begin{itemize}[leftmargin=*]
-  \item $f = 0.10$ (10\% serial) gives $S_\infty = 10$. This is the example on the slide.
-  \item $f = 0.01$ (1\% serial) gives $S_\infty = 100$.
-  \item $f = 0.001$ (0.1\% serial) gives $S_\infty = 1000$.
+\begin{itemize}
+  \item $f = 0.10$ ($10\%$ serial) gives $S_\infty = 10$. This is the example on the slide.
+  \item $f = 0.01$ ($1\%$ serial) gives $S_\infty = 100$.
+  \item $f = 0.001$ ($0.1\%$ serial) gives $S_\infty = 1000$.
 \end{itemize}
 
-The lesson is that the serial fraction governs everything. Speeding up code that
-is already parallel has diminishing returns; even a tiny reduction in the serial
-portion can raise the ceiling dramatically.
+The lesson is that the serial fraction governs everything. Speeding up
+code that is already parallel has diminishing returns; even a tiny
+reduction in the serial portion can raise the ceiling dramatically.
 
-\begin{insightbox}[The NVIDIA example Sir gave]
-Imagine you are a product manager at NVIDIA with a \$10\,M budget for next quarter
-and a known workload whose serial fraction you can estimate. The capacity-planning
-calculation \emph{is} Amdahl's law: compute $S_\infty = 1/f$, identify the $p$ at
-which the curve plateaus, and that is roughly the maximum number of GPUs worth
-buying. Beyond that, you are paying for cards that cannot make the job any
-faster.
-\end{insightbox}
+\begin{ppkey}
+\textbf{The NVIDIA example given in class.}
+Imagine you are a product manager at NVIDIA with a \$10\,M budget for next
+quarter and a known workload whose serial fraction you can estimate. The
+capacity-planning calculation \emph{is} Amdahl's law: compute
+$S_\infty = 1/f$, identify the $p$ at which the curve plateaus, and that is
+roughly the maximum number of GPUs worth buying. Beyond that, you are
+paying for cards that cannot make the job any faster.
+\end{ppkey}
 
 \subsection{What the speedup curves look like}
 
-\begin{center}
+\begin{figure}[h]
+\centering
 \begin{tikzpicture}
 \begin{axis}[
   width=0.85\linewidth, height=7cm,
@@ -482,132 +380,149 @@ faster.
   xmin=1, xmax=64, ymin=0, ymax=22,
   grid=both, grid style={gray!20},
   legend pos=north west,
-  legend style={font=\small, draw=primary},
+  legend style={font=\small},
   every axis plot/.append style={thick},
   title={Amdahl's law for several values of $f$}
 ]
-\addplot [domain=1:64, samples=200, color=primary]
+\addplot [domain=1:64, samples=200, color=PPBlue]
   {1/(0.05 + 0.95/x)};
 \addlegendentry{$f=0.05$ \;($S_\infty=20$)}
 
-\addplot [domain=1:64, samples=200, color=accent]
+\addplot [domain=1:64, samples=200, color=PPWarn]
   {1/(0.10 + 0.90/x)};
 \addlegendentry{$f=0.10$ \;($S_\infty=10$)}
 
-\addplot [domain=1:64, samples=200, color=emerald]
+\addplot [domain=1:64, samples=200, color=PPGood]
   {1/(0.25 + 0.75/x)};
 \addlegendentry{$f=0.25$ \;($S_\infty=4$)}
 
-\addplot [domain=1:64, samples=200, color=amber]
+\addplot [domain=1:64, samples=200, color=PPGray]
   {1/(0.50 + 0.50/x)};
 \addlegendentry{$f=0.50$ \;($S_\infty=2$)}
 \end{axis}
 \end{tikzpicture}
-\captionof{figure}{Each curve plateaus at $1/f$ no matter how many processors are added.}
-\end{center}
+\caption{Each curve plateaus at $1/f$ no matter how many processors are added.}
+\label{fig:amdahl-curves}
+\end{figure}
 
 % ==========================================================
 \section{Gustafson's law}
 % ==========================================================
 
-Amdahl's law assumes the problem size is fixed, which is rarely how things work in
-practice. Most of the time we buy more processors precisely because we want to
-solve \emph{bigger} problems --- not the same one slightly faster. Gustafson noticed
-that in this scaled-workload setting, the serial portion of a program tends to
-stay roughly the same in absolute terms, while the parallel portion grows with
-$p$. So the effective serial fraction \emph{shrinks} as we scale up, and the
-ceiling becomes much more forgiving.
+Amdahl's law assumes the problem size is fixed, which is rarely how things
+work in practice. Most of the time we buy more processors precisely because
+we want to solve \emph{bigger} problems --- not the same one slightly
+faster. Gustafson noticed that in this scaled-workload setting, the serial
+portion of a program tends to stay roughly the same in absolute terms,
+while the parallel portion grows with $p$. So the effective serial
+fraction \emph{shrinks} as we scale up, and the ceiling becomes much more
+forgiving.
 
 \subsection{Setup}
 
-Take the $p$-processor run as the reference, with runtime $T(n,p)$, and split it
-as
-\begin{itemize}[leftmargin=*]
+Take the $p$-processor run as the reference, with runtime $T(n,p)$, and
+split it as
+\begin{itemize}
   \item $f \cdot T(n,p)$ for the sequential portion,
   \item $(1-f)\cdot T(n,p)$ for the parallel portion.
 \end{itemize}
 
-If we ran the same workload on a single processor, the parallel portion would
-take $p$ times longer (one processor doing what $p$ did) and the serial portion
-would be unchanged. So
+If we ran the same workload on a single processor, the parallel portion
+would take $p$ times longer (one processor doing what $p$ did) and the
+serial portion would be unchanged. So
 \[
 T(n,1) \;=\; f\cdot T(n,p) \;+\; p \cdot (1-f) \cdot T(n,p).
 \]
 
-\begin{definitionbox}[Gustafson's law]
+\begin{ppdefn}
+\textbf{Gustafson's law.}
 \[
-\boxed{\;\Sp \;=\; \frac{T(n,1)}{T(n,p)} \;=\; f + (1-f)\cdot p \;=\; p - f(p-1)\;}
+S_p \;=\; \frac{T(n,1)}{T(n,p)} \;=\; f + (1-f)\cdot p \;=\; p - f(p-1).
 \]
-\end{definitionbox}
+\end{ppdefn}
 
 This grows linearly in $p$, with no $1/f$ ceiling.
 
-\begin{errorbox}[A subtle point: the $f$ in Gustafson is not the $f$ in Amdahl]
-The slide reuses the symbol $f$ for both laws, which trips students up every year
-and was the subject of a long Q\&A in this lecture. In Amdahl's law, $f$ is the
-serial fraction of the \emph{serial} runtime $\Tone$. In Gustafson's law, $f$ is
-the serial fraction of the \emph{parallel} runtime $T(n,p)$. They are different
-numbers with different physical meanings, and treating them as the same is the
-source of the question below.
+\begin{pppitfall}
+\textbf{The $f$ in Gustafson is not the $f$ in Amdahl.}
+The slide reuses the symbol $f$ for both laws, which trips students up
+every year and was the subject of a long discussion in this lecture. In
+Amdahl's law, $f$ is the serial fraction of the \emph{serial} runtime
+$T_1$. In Gustafson's law, $f$ is the serial fraction of the
+\emph{parallel} runtime $T(n,p)$. They are different numbers with
+different physical meanings, and treating them as the same is the source of
+the natural objection in the next subsection.
 
-Some textbooks rename Gustafson's $f$ to $s$ to avoid the collision; we will
-mention this where it helps.
-\end{errorbox}
+Some textbooks rename Gustafson's $f$ to $s$ to avoid the collision; we
+will mention this where it helps.
+\end{pppitfall}
 
-\subsection{If Amdahl Limits Speedup, How Does Gustafson Avoid It?}
+\subsection{If Amdahl limits speedup, how does Gustafson avoid it?}
 \label{sec:reconcile}
 
-A natural question, asked by Ambar in class: if Amdahl says the speedup is capped
-at $1/f$, how can Gustafson promise unbounded speedup for the same program?
+A natural question, asked by Ambar in class: if Amdahl says the speedup is
+capped at $1/f$, how can Gustafson promise unbounded speedup for the same
+program?
 
-\begin{qabox}[Reconciling the two laws]
-If the two $f$'s were really the same number, equating the two speedup formulas
-would force
+\begin{ppnote}
+\textbf{Reconciling the two laws.}
+If the two $f$'s were really the same number, equating the two speedup
+formulas would force
 \[
 \frac{1}{f + (1-f)/p} \;\stackrel{?}{=}\; f + (1-f)p,
 \]
-which is plainly false --- the left side is bounded by $1/f$, the right side
-grows without bound.
+which is plainly false --- the left side is bounded by $1/f$, the right
+side grows without bound.
 
-The way out is that Gustafson's $f$ is the serial fraction of the runtime on
-$p$ processors, and that fraction \emph{depends on the problem size} even though
-$f$ doesn't have $n$ written in it. As $n$ grows, the sequential portion stays
-roughly the same in absolute time while the parallel portion grows, so the
-proportion $f$ shrinks. Amdahl's $f$ does not shrink, because it is tied to the
-fixed-size serial run.
+The way out is that Gustafson's $f$ is the serial fraction of the runtime
+on $p$ processors, and that fraction \emph{depends on the problem size}
+even though $f$ doesn't have $n$ written in it. As $n$ grows, the
+sequential portion stays roughly the same in absolute time while the
+parallel portion grows, so the proportion $f$ shrinks. Amdahl's $f$ does
+not shrink, because it is tied to the fixed-size serial run.
 
 So the two laws answer two different questions:
-\begin{itemize}[leftmargin=*]
+\begin{itemize}
   \item \textit{Amdahl}: this exact problem, more processors --- how fast?
-  \item \textit{Gustafson}: more processors and a proportionally bigger problem --- how does the bigger problem on $p$ processors compare to the same bigger problem on one processor?
+  \item \textit{Gustafson}: more processors and a proportionally bigger
+        problem --- how does the bigger problem on $p$ processors compare
+        to the same bigger problem on one processor?
 \end{itemize}
-\end{qabox}
+\end{ppnote}
 
 \subsection{Reading Gustafson's law}
 
-\begin{itemize}[leftmargin=*]
-  \item If $f = 0.05$ on the parallel run and $p = 100$, Gustafson gives $\Sp = 0.05 + 0.95 \times 100 = 95.05$. Amdahl with the same nominal $f = 0.05$ would have capped this at $1/0.05 = 20$.
-  \item The form $\Sp = p - f(p-1)$ is illuminating: the speedup is ``almost $p$'' minus a small correction. As $p$ grows, the correction is dwarfed by the $p$ and the speedup keeps climbing.
+\begin{itemize}
+  \item If $f = 0.05$ on the parallel run and $p = 100$, Gustafson gives
+        $S_p = 0.05 + 0.95 \times 100 = 95.05$. Amdahl with the same
+        nominal $f = 0.05$ would have capped this at $1/0.05 = 20$.
+  \item The form $S_p = p - f(p-1)$ is illuminating: the speedup is
+        ``almost $p$'' minus a small correction. As $p$ grows, the
+        correction is dwarfed by the $p$ and the speedup keeps climbing.
 \end{itemize}
 
 \subsection{Side-by-side comparison}
 
-\begin{center}
+\begin{table}[h]
+\centering
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}p{0.22\linewidth} p{0.36\linewidth} p{0.36\linewidth}@{}}
+\begin{tabular}{@{}p{0.22\linewidth} p{0.34\linewidth} p{0.34\linewidth}@{}}
 \toprule
  & \textbf{Amdahl} & \textbf{Gustafson} \\ \midrule
 Problem size & Fixed & Scales with $p$ \\
 Meaning of $f$ & Serial fraction of $T_1$ & Serial fraction of $T(n,p)$ \\
 Depends on problem size? & No & Yes (implicitly, through $T(n,p)$) \\
-Speedup formula & $\Sp = \dfrac{1}{f + (1-f)/p}$ & $\Sp = f + (1-f)p$ \\
+Speedup formula & $S_p = \dfrac{1}{f + (1-f)/p}$ & $S_p = f + (1-f)p$ \\
 Limit as $p\to\infty$ & $1/f$ & Linear in $p$, no ceiling \\
 Governs & Strong scaling & Weak scaling \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Amdahl vs.\ Gustafson at a glance.}
+\label{tab:amdahl-vs-gustafson}
+\end{table}
 
-\begin{center}
+\begin{figure}[h]
+\centering
 \begin{tikzpicture}
 \begin{axis}[
   width=0.85\linewidth, height=7cm,
@@ -616,45 +531,47 @@ Governs & Strong scaling & Weak scaling \\
   xmin=1, xmax=64, ymin=0, ymax=65,
   grid=both, grid style={gray!20},
   legend pos=north west,
-  legend style={font=\small, draw=primary},
+  legend style={font=\small},
   every axis plot/.append style={thick},
-  title={Amdahl vs.\ Gustafson at 5\% serial fraction}
+  title={Amdahl vs.\ Gustafson at $5\%$ serial fraction}
 ]
-\addplot [domain=1:64, samples=200, color=accent]
+\addplot [domain=1:64, samples=200, color=PPWarn]
   {1/(0.05 + 0.95/x)};
 \addlegendentry{Amdahl ($f=0.05$): ceiling $=20$}
 
-\addplot [domain=1:64, samples=200, color=emerald]
+\addplot [domain=1:64, samples=200, color=PPGood]
   {0.05 + 0.95*x};
 \addlegendentry{Gustafson ($f=0.05$): linear}
 
-\addplot [domain=1:64, samples=2, color=gray, dashed]
+\addplot [domain=1:64, samples=2, color=PPGray, dashed]
   {x};
 \addlegendentry{Ideal $S_p = p$}
 \end{axis}
 \end{tikzpicture}
-\captionof{figure}{Same nominal $5\%$ serial fraction, two very different
-predictions. They disagree because they are not really talking about the same
-quantity (see the discussion in \S\ref{sec:reconcile}).}
-\end{center}
+\caption{Same nominal $5\%$ serial fraction, two very different
+predictions. They disagree because they are not really talking about the
+same quantity (see Section~\ref{sec:reconcile}).}
+\label{fig:amdahl-vs-gustafson}
+\end{figure}
 
 % ==========================================================
 \section{Iso-efficiency: how fast must the problem grow?}
 \label{sec:isoefficiency}
 % ==========================================================
 
-Sir closed the lecture by going back to the question that came up when we first
-defined efficiency. We saw that $E_{64} = 0.3125$ was much worse than $E_8 = 0.875$
-for the same program. The natural inverse question is:
+The lecture closed by going back to the question that came up when we
+first defined efficiency. We saw that $E_{64} = 0.3125$ was much worse
+than $E_8 = 0.875$ for the same program. The natural inverse question is:
 
-\begin{insightbox}[The iso-efficiency question]
-At what rate must the problem size $n$ grow with the processor count $p$ so that
-$E(n, p)$ stays at some chosen constant $k$?
-\end{insightbox}
+\begin{ppkey}
+\textbf{The iso-efficiency question.}
+At what rate must the problem size $n$ grow with the processor count $p$
+so that $E(n, p)$ stays at some chosen constant $k$?
+\end{ppkey}
 
-This is the iso-efficiency view. It pulls together everything we have done:
-efficiency is the quality, $n$ and $p$ are the controls, and we ask how the
-controls must move together.
+This is the iso-efficiency view. It pulls together everything we have
+done: efficiency is the quality, $n$ and $p$ are the controls, and we ask
+how the controls must move together.
 
 \subsection{Derivation}
 
@@ -662,150 +579,197 @@ Start from the definition,
 \[
 E(n, p) \;=\; \frac{T(n,1)}{p \cdot T(n,p)}.
 \]
-Use $\To = p \cdot T(n,p) - T(n,1)$ to rewrite $T(n,p) = (T(n,1) + \To)/p$, which
-gives
+Use $T_o = p \cdot T(n,p) - T(n,1)$ to rewrite
+$T(n,p) = (T(n,1) + T_o)/p$, which gives
 \[
-E(n,p) \;=\; \frac{1}{1 + \To(n,p)/T(n,1)}.
+E(n,p) \;=\; \frac{1}{1 + T_o(n,p)/T(n,1)}.
 \]
 If we want this to equal a target efficiency $k < 1$, we solve for $T(n,1)$:
 \[
-T(n,1) \;=\; \frac{k}{1-k}\cdot \To(n,p).
+T(n,1) \;=\; \frac{k}{1-k}\cdot T_o(n,p).
 \]
-$T(n,1)$ is essentially the work $W(n)$ done by the serial algorithm, so we can
-write
+$T(n,1)$ is essentially the work $W(n)$ done by the serial algorithm, so
+we can write
 \[
-\boxed{\;W(p) \;=\; \frac{k}{1-k}\cdot \To(n,p)\;}
+W(p) \;=\; \frac{k}{1-k}\cdot T_o(n,p).
 \]
-This is the \textbf{iso-efficiency function}: it tells us how much work the
-problem must contain to absorb the overhead and keep $E$ at $k$.
+This is the \ppterm{iso-efficiency function}: it tells us how much work
+the problem must contain to absorb the overhead and keep $E$ at $k$.
 
 \subsection{Strongly scalable vs.\ weakly scalable}
 
-The growth rate of $W(p)$ summarises everything about an algorithm's scalability.
-The classification Sir gave verbally:
+The growth rate of $W(p)$ summarises everything about an algorithm's
+scalability. The classification given verbally in class:
 
-\begin{definitionbox}[Strongly vs.\ weakly scalable]
+\begin{ppdefn}
+\textbf{Strongly vs.\ weakly scalable.}
 Let $W(p)$ be the problem size needed to hold efficiency at a chosen $k$.
-\begin{itemize}[leftmargin=*]
-  \item If $W(p)$ grows \emph{slowly} with $p$ --- constant, logarithmic, or at worst a modest polynomial --- the algorithm is \textbf{strongly scalable}.
-  \item If $W(p)$ has to grow as fast as $p$ (or faster) just to hold efficiency steady, the algorithm is only \textbf{weakly scalable}.
+\begin{itemize}
+  \item If $W(p)$ grows \emph{slowly} with $p$ --- constant, logarithmic,
+        or at worst a modest polynomial --- the algorithm is
+        \ppterm{strongly scalable}.
+  \item If $W(p)$ has to grow as fast as $p$ (or faster) just to hold
+        efficiency steady, the algorithm is only \ppterm{weakly scalable}.
 \end{itemize}
-\end{definitionbox}
+\end{ppdefn}
 
-\begin{errorbox}[Don't confuse the two ``strong / weak'' meanings]
-``Strong scaling'' and ``weak scaling'' (Section 4) describe \emph{experimental
-regimes} --- whether you hold $n$ fixed or grow it with $p$ when you run your
-benchmark. ``Strongly scalable'' and ``weakly scalable'' here describe an
-\emph{algorithmic property} --- how fast its iso-efficiency function grows. Same
-words, different things; pay attention to context. Different textbooks also use
-``scalable parallel algorithm'' in slightly different ways. The iso-efficiency
-function itself is unambiguous, so when in doubt, just write it down.
-\end{errorbox}
+\begin{pppitfall}
+\textbf{Don't confuse the two ``strong~/~weak'' meanings.}
+``Strong scaling'' and ``weak scaling''
+(Section~\ref{sec:scalability}) describe \emph{experimental regimes} ---
+whether you hold $n$ fixed or grow it with $p$ when you run your benchmark.
+``Strongly scalable'' and ``weakly scalable'' here describe an
+\emph{algorithmic property} --- how fast its iso-efficiency function grows.
+Same words, different things; pay attention to context. Different
+textbooks also use ``scalable parallel algorithm'' in slightly different
+ways. The iso-efficiency function itself is unambiguous, so when in doubt,
+just write it down.
+\end{pppitfall}
 
 \subsection{Some rules of thumb}
 
-\begin{itemize}[leftmargin=*]
-  \item $W(p) = \Theta(p)$ --- good. Doubling processors needs doubling the work to keep efficiency constant. Many dense linear algebra routines sit here.
-  \item $W(p) = \Theta(p \log p)$ --- still respectable. Typical of parallel sorts and prefix-sum algorithms.
-  \item $W(p) = \Theta(p^2)$ or worse --- poor. The problem has to blow up quadratically just to stand still on efficiency. Algorithms in this category are usually redesigned or avoided at large $p$.
+\begin{itemize}
+  \item $W(p) = \Theta(p)$ --- good. Doubling processors needs doubling
+        the work to keep efficiency constant. Many dense linear algebra
+        routines sit here.
+  \item $W(p) = \Theta(p \log p)$ --- still respectable. Typical of
+        parallel sorts and prefix-sum algorithms.
+  \item $W(p) = \Theta(p^2)$ or worse --- poor. The problem has to blow
+        up quadratically just to stand still on efficiency. Algorithms in
+        this category are usually redesigned or avoided at large $p$.
 \end{itemize}
 
-This also closes the loop on the example from earlier: if we want the 64-processor
-run to keep the $E_8 = 0.875$ efficiency we measured at $p=8$, the iso-efficiency
-function tells us exactly how much we need to grow $n$. A library writer who
-hands users a fixed implementation without telling them this growth rate is, in
-Sir's word, selling a ``facade'' of parallelism.
+This also closes the loop on the example from earlier: if we want the
+$64$-processor run to keep the $E_8 = 0.875$ efficiency we measured at
+$p=8$, the iso-efficiency function tells us exactly how much we need to
+grow $n$. A library writer who hands users a fixed implementation without
+telling them this growth rate is, as it was put in class, selling a
+``facade'' of parallelism.
 
 % ==========================================================
 \section{A few practical points}
 % ==========================================================
 
-The two classical laws are clean but they paper over a few things that matter in
-real systems. None of these were on the slides; they are standard things worth
-keeping in mind.
+The two classical laws are clean but they paper over a few things that
+matter in real systems. None of these were on the slides; they are
+standard things worth keeping in mind.
 
 \subsection{Communication-aware models}
 
-Both Amdahl and Gustafson assume the parallel portion scales perfectly. Real code
-does not. A simple refinement is
+Both Amdahl and Gustafson assume the parallel portion scales perfectly.
+Real code does not. A simple refinement is
 \[
 T(n,p) \;=\; \frac{W(n)}{p} \;+\; T_{\text{comm}}(n,p),
 \]
-where $T_{\text{comm}}$ is typically of the form $\alpha + \beta \cdot m$ for a
-message of $m$ bytes, $\alpha$ being the latency and $\beta$ the inverse
-bandwidth. In many distributed settings $T_{\text{comm}}$ grows like $\log p$ or
-$\sqrt{p}$, which slowly eats into the speedup as $p$ grows.
+where $T_{\text{comm}}$ is typically of the form $\alpha + \beta \cdot m$
+for a message of $m$ bytes, $\alpha$ being the latency and $\beta$ the
+inverse bandwidth. In many distributed settings $T_{\text{comm}}$ grows
+like $\log p$ or $\sqrt{p}$, which slowly eats into the speedup as $p$
+grows.
 
 \subsection{Super-linear speedup is real}
 
-The textbook definitions rule out $\Sp > p$, but it does happen, usually for one
-of three reasons:
-\begin{itemize}[leftmargin=*]
-  \item \textbf{Cache:} the partitioned working set fits in faster memory than the original did.
-  \item \textbf{Search:} parallel branch-and-bound prunes the tree earlier.
-  \item \textbf{Memory bandwidth:} more nodes mean more aggregate memory bandwidth, not just more cores.
+The textbook definitions rule out $S_p > p$, but it does happen, usually
+for one of three reasons:
+\begin{itemize}
+  \item \ppemph{Cache:} the partitioned working set fits in faster memory
+        than the original did.
+  \item \ppemph{Search:} parallel branch-and-bound prunes the tree earlier.
+  \item \ppemph{Memory bandwidth:} more nodes mean more aggregate memory
+        bandwidth, not just more cores.
 \end{itemize}
 
 \subsection{Energy and the green supercomputer}
 
-Sir mentioned the rise of the ``green supercomputer'' movement from his early
-career. Once GPGPUs entered HPC, raw FLOPS stopped being a sufficient figure of
-merit --- two systems with the same FLOPS could burn very different amounts of
-electricity. The metric people switched to is \textbf{flops per joule}: useful
-computation per unit of energy. Looked at this way, the cost example we did
-earlier ($\Cp = 160$ vs.\ $\Tone = 100$) is not just a wall-clock story but a
-$60\%$ extra energy bill for the same answer.
+The rise of the ``green supercomputer'' movement was mentioned in class.
+Once GPGPUs entered HPC, raw FLOPS stopped being a sufficient figure of
+merit --- two systems with the same FLOPS could burn very different
+amounts of electricity. The metric people switched to is
+\ppterm{flops per joule}: useful computation per unit of energy. Looked at
+this way, the cost example we did earlier ($C_p = 160$ vs.\ $T_1 = 100$)
+is not just a wall-clock story but a $60\%$ extra energy bill for the same
+answer.
 
 \subsection{What to actually report}
 
-\begin{insightbox}[What to report when benchmarking a parallel program]
-\begin{enumerate}[leftmargin=*]
-  \item $\Tone$ (best serial) and $\Tp$ for several $p$.
+\begin{ppkey}
+\textbf{What to report when benchmarking a parallel program.}
+\begin{enumerate}
+  \item $T_1$ (best serial) and $T_p$ for several $p$.
   \item Both strong-scaling and weak-scaling curves where they make sense.
-  \item Efficiency $\Ep$, not just speedup --- it is where the wasted work shows up.
-  \item A breakdown of $\Tp$ into computation, communication, synchronisation, idle.
-  \item The iso-efficiency function (or an empirical estimate) if the algorithm is intended for large $p$.
+  \item Efficiency $E_p$, not just speedup --- it is where the wasted
+        work shows up.
+  \item A breakdown of $T_p$ into computation, communication,
+        synchronisation, idle.
+  \item The iso-efficiency function (or an empirical estimate) if the
+        algorithm is intended for large $p$.
   \item Problem size: without $n$, the numbers don't mean anything.
 \end{enumerate}
-\end{insightbox}
+\end{ppkey}
 
 % ==========================================================
 \section{Summary}
 % ==========================================================
 
-\begin{center}
+\begin{table}[h]
+\centering
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{@{}l l l@{}}
 \toprule
 \textbf{Quantity} & \textbf{Definition} & \textbf{Ideal value} \\ \midrule
-Speedup $\Sp$ & $\Tone / \Tp$ & $p$ \\
-Cost $\Cp$ & $p \cdot \Tp$ & $\Theta(\Tone)$ \\
-Overhead $\To$ & $\Cp - \Tone$ & $\to 0$ asymptotically \\
-Efficiency $\Ep$ & $\Tone / (p \cdot \Tp) = \Sp / p$ & $1$ \\
+Speedup $S_p$ & $T_1 / T_p$ & $p$ \\
+Cost $C_p$ & $p \cdot T_p$ & $\Theta(T_1)$ \\
+Overhead $T_o$ & $C_p - T_1$ & $\to 0$ asymptotically \\
+Efficiency $E_p$ & $T_1 / (p \cdot T_p) = S_p / p$ & $1$ \\
 Strong scaling & $T(n,p)$ for fixed $n$ & $T(n,1)/p$ \\
 Weak scaling & $T(mp,p)$ for fixed $m$ & $T(m,1)$ \\
-Amdahl & $\Sp = 1/(f + (1-f)/p)$ & $\to 1/f$ \\
-Gustafson & $\Sp = f + (1-f)p$ & linear in $p$ \\
+Amdahl & $S_p = 1/(f + (1-f)/p)$ & $\to 1/f$ \\
+Gustafson & $S_p = f + (1-f)p$ & linear in $p$ \\
 Iso-efficiency $W(p)$ & work needed to hold $E = k$ & slow-growing in $p$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Summary of the metrics introduced in this chapter.}
+\label{tab:metrics-summary}
+\end{table}
 
-\begin{insightbox}[Things to take away]
-\begin{enumerate}[leftmargin=*]
-  \item Speedup without efficiency lies. $S_{64} = 20$ sounds great until you notice $E_{64} = 0.31$.
-  \item Strong and weak scaling are different experiments and tell different stories. Report both when both make sense.
-  \item Amdahl and Gustafson don't actually contradict each other --- they are answering different questions, and their $f$'s mean different things.
-  \item The serial fraction is the enemy. Tiny serial sections dominate at large $p$.
-  \item Overheads are not a footnote. Communication, synchronisation, and idle time are where most speedups die.
-  \item Iso-efficiency is the honest scalability metric --- it forces you to say ``how fast at what size?''
+\begin{ppkey}
+\textbf{Things to take away.}
+\begin{enumerate}
+  \item Speedup without efficiency lies. $S_{64} = 20$ sounds great until
+        you notice $E_{64} = 0.31$.
+  \item Strong and weak scaling are different experiments and tell
+        different stories. Report both when both make sense.
+  \item Amdahl and Gustafson don't actually contradict each other --- they
+        are answering different questions, and their $f$'s mean different
+        things.
+  \item The serial fraction is the enemy. Tiny serial sections dominate
+        at large $p$.
+  \item Overheads are not a footnote. Communication, synchronisation, and
+        idle time are where most speedups die.
+  \item Iso-efficiency is the honest scalability metric --- it forces you
+        to say ``how fast at what size?''.
 \end{enumerate}
-\end{insightbox}
+\end{ppkey}
 
-\vfill
-\begin{center}
-\rule{0.6\linewidth}{0.4pt}\\[0.3em]
-{\small\itshape End of Lecture 21 notes}
-\end{center}
+\section{Exercises}
+\begin{ppexercises}
+  \ppexercise{A program has serial fraction $f = 0.02$. What is the
+  maximum speedup achievable under Amdahl's law? At what $p$ does the
+  speedup curve reach $90\%$ of this ceiling?}
 
-\end{document}
+  \ppexercise{For matrix multiplication with $T_1 = \Theta(n^3)$ and a
+  parallel implementation achieving $T_p = n^2 / \sqrt{p} + \log p$,
+  derive the iso-efficiency function and classify the algorithm as
+  strongly or weakly scalable.}
+
+  \ppexercise{Repeat the cost analysis of the matrix-multiplication
+  example with $T_p = n \log n$ on $p = n^2$ processors. Is the algorithm
+  cost-optimal? Compute $S_p$, $E_p$, and $T_o$.}
+
+  \ppexercise{Show algebraically that Amdahl's $S_p$ and Gustafson's
+  $S_p$ are equal at $p = 1$, and explain what that means physically.}
+
+  \ppexercise{A weak-scaling experiment yields times $T(mp, p)$ that grow
+  like $\log p$. Is this acceptable? Justify in terms of total work and
+  efficiency.}
+\end{ppexercises}
